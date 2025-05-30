@@ -202,179 +202,162 @@ if (btnImprimir) {
         });
 
         // --- Configurações Iniciais ---
-        const margemEsquerda = 10;
-        const margemSuperior = 10;
-        const larguraConteudoUtil = doc.internal.pageSize.getWidth() - (2 * margemEsquerda);
-        let yPos = margemSuperior;
-        const alturaLinhaPadrao = 7; // mm, ajuste conforme necessário
-        const alturaLinhaCamposComBorda = 8; // Altura para as caixas de texto dos campos
+        const margemEsquerdaPagina = 15; // Aumentei as margens da página
+        const margemSuperiorPagina = 15;
+        const larguraConteudoUtil = doc.internal.pageSize.getWidth() - (2 * margemEsquerdaPagina);
+        let yPos = margemSuperiorPagina;
+        const alturaLinhaCampos = 7; // Altura padrão para uma linha de campo
+        const espessuraBordaPrincipal = 0.5;
+        const espessuraBordaInterna = 0.2;
 
-        doc.setFont("helvetica", "normal"); // Fonte padrão
-        doc.setFontSize(10); // Tamanho de fonte padrão para o corpo
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
 
         // --- 1. Logo e Cabeçalho Principal ---
-        // ADICIONAR LOGO AQUI SE VOCÊ TIVER A IMAGEM
-        // Exemplo:
-        // try {
-        //     // Supondo que 'logoSantaCasaDataURL' seja uma string base64 da sua imagem
-        //     // doc.addImage(logoSantaCasaDataURL, 'PNG', margemEsquerda, yPos, 20, 20); // x, y, largura, altura
-        //     // yPos += 25; // Ajusta yPos após o logo
-        // } catch (e) { console.error("Erro ao adicionar logo:", e); }
+        // SUBSTITUA 'logoSantaCasaDataURL' PELA STRING BASE64 DA SUA IMAGEM DO LOGO
+        const logoSantaCasaDataURL = 'COLE_A_STRING_BASE64_DO_SEU_LOGO_AQUI'; // Ex: 'data:image/png;base64,iVBORw0KGgo...'
+        const larguraLogo = 15; // mm - ajuste
+        const alturaLogo = 15;  // mm - ajuste
 
-        // Se não houver logo, ajuste o yPos inicial ou o espaço abaixo
-        yPos += 5; // Espaço inicial, ajuste se adicionar logo
-
+        try {
+            if (logoSantaCasaDataURL && logoSantaCasaDataURL !== 'COLE_A_STRING_BASE64_DO_SEU_LOGO_AQUI') {
+                 doc.addImage(logoSantaCasaDataURL, 'PNG', margemEsquerdaPagina, yPos, larguraLogo, alturaLogo);
+            } else {
+                console.warn("Logo DataURL não fornecido. Pulando adição do logo.");
+            }
+        } catch (e) {
+            console.error("Erro ao adicionar logo:", e);
+        }
+        
+        const yPosTitulo = yPos + (alturaLogo / 2); // Centraliza o título com o logo (aproximadamente)
         doc.setFontSize(14);
         doc.setFont("helvetica", "bold");
-        doc.text("SANTA CASA DE MISERICÓRDIA DE PARNAÍBA", doc.internal.pageSize.getWidth() / 2, yPos, { align: 'center' });
-        yPos += alturaLinhaPadrao * 1.5; // Aumenta o espaço depois do título
+        doc.text("SANTA CASA DE MISERICÓRDIA DE PARNAÍBA", doc.internal.pageSize.getWidth() / 2, yPosTitulo, { align: 'center' });
+        yPos += Math.max(alturaLogo, alturaLinhaPadrao * 1.5) + 5; // Espaço após o cabeçalho
 
-        // --- Linha abaixo do cabeçalho principal ---
-        doc.setLineWidth(0.5);
-        doc.line(margemEsquerda, yPos, margemEsquerda + larguraConteudoUtil, yPos);
-        yPos += alturaLinhaPadrao * 0.5;
+        // --- Borda Principal Externa (será desenhada no final) ---
+        const yInicioConteudoComBorda = yPos;
 
+        // --- Coleta de Dados (como antes, certifique-se que os IDs HTML estão corretos) ---
+        const nomePaciente = document.getElementById('paciente')?.value.trim() || " ";
+        const operador = document.getElementById('cirurgiao')?.value.trim() || " ";
+        const assistente = document.getElementById('assistente')?.value.trim() || " ";
+        const instrumentador = document.getElementById('instrumentador')?.value.trim() || " ";
+        const anestesista = document.getElementById('anestesista')?.value.trim() || " ";
 
-        // --- Coleta de Dados (Verifique se os IDs dos campos HTML estão corretos) ---
-        const nomePaciente = document.getElementById('paciente')?.value || " ";
-        const operador = document.getElementById('cirurgiao')?.value || " ";
-        const assistente = document.getElementById('assistente')?.value || " ";
-        const instrumentador = document.getElementById('instrumentador')?.value || " ";
-        const anestesista = document.getElementById('anestesista')?.value || " ";
-
-        // Para DATA DA OPERAÇÃO e INTERCORRÊNCIAS, você precisa ter esses campos no seu HTML
-        // ou definir valores padrão aqui.
-        const dataOperacaoEl = document.getElementById('dataOperacao'); // Supondo que você criou este campo
-        let dataOperacao = dataOperacaoEl ? dataOperacaoEl.value : new Date().toLocaleDateString('pt-BR');
-        if (dataOperacaoEl && dataOperacaoEl.type === 'date' && dataOperacaoEl.value) { // Formata data se for do tipo date
-             const [year, month, day] = dataOperacaoEl.value.split('-');
-             dataOperacao = `${day}/${month}/${year}`;
+        const dataOperacaoEl = document.getElementById('dataOperacao');
+        let dataOperacao = " ";
+        if (dataOperacaoEl && dataOperacaoEl.value) {
+            const [year, month, day] = dataOperacaoEl.value.split('-');
+            dataOperacao = `${day}/${month}/${year}`;
         }
 
-
-        const diagPreOp = document.getElementById('diagPreOp')?.value || " ";
-        const operacaoTipo = document.getElementById('procedimento')?.value || " ";
-
-        let diagPosOpValor = document.getElementById('diagPosOp')?.value || " ";
-        const diagPosOpMesmoCheckbox = document.getElementById('diagPosOpMesmo'); // Supondo que você criou este checkbox
+        const diagPreOp = document.getElementById('diagPreOp')?.value.trim() || " ";
+        const operacaoTipo = document.getElementById('procedimento')?.value.trim() || " ";
+        let diagPosOpValor = document.getElementById('diagPosOp')?.value.trim() || " ";
+        const diagPosOpMesmoCheckbox = document.getElementById('diagPosOpMesmo');
         if (diagPosOpMesmoCheckbox && diagPosOpMesmoCheckbox.checked) {
             diagPosOpValor = "O mesmo";
         }
+        const intercorrenciasEl = document.getElementById('intercorrencias');
+        const intercorrencias = intercorrenciasEl ? intercorrenciasEl.value.trim() : "Sem intercorrências";
+        const descricaoCirurgica = document.getElementById('descricaoCirurgica')?.value.trim() || " ";
 
-        const intercorrenciasEl = document.getElementById('intercorrencias'); // Supondo que você criou este campo
-        const intercorrencias = intercorrenciasEl ? intercorrenciasEl.value : "Sem intercorrências";
-
-        const descricaoCirurgica = document.getElementById('descricaoCirurgica')?.value || " ";
-
-
-        // --- Funções Auxiliares para desenhar campos com borda ---
-        function desenharCampoComBorda(label, valor, x, y, larguraLabel, larguraValor, altura) {
-            doc.setFontSize(9); // Tamanho menor para labels
+        // --- Funções Auxiliares para desenhar campos ---
+        // xLabel, yLinha, alturaLinha, textoLabel, valor, xValor, larguraValor, [opcoesTextoValor]
+        function desenharLinhaCampoSimples(xLabel, yLinha, alturaLinha, textoLabel, valor, xValor, larguraValor, opcoesTextoValor = {}) {
             doc.setFont("helvetica", "bold");
-            doc.text(label, x, y + altura / 1.6); // Ajuste vertical do label
-
-            doc.setFontSize(10); // Tamanho para o valor
-            doc.setFont("helvetica", "normal");
-            doc.rect(x + larguraLabel -1 , y, larguraValor + 1, altura); // Caixa do valor
-            doc.text(valor, x + larguraLabel + 1, y + altura / 1.6, { maxWidth: larguraValor - 3 }); // +1 padding, -3 maxWidth
-            doc.setLineWidth(0.2); // Linha fina para bordas internas
-            doc.rect(x-1, y, larguraLabel + larguraValor, altura); // Borda externa da linha inteira do campo
-        }
-
-        function desenharSecaoComBorda(label, valor, x, y, larguraTotal, alturaLabel, alturaValorMinima) {
             doc.setFontSize(9);
-            doc.setFont("helvetica", "bold");
-            doc.text(label, x, y + alturaLabel / 1.6);
-            doc.setLineWidth(0.2);
-            doc.rect(x-1, y, larguraTotal+1, alturaLabel); // Borda do label
+            doc.text(textoLabel, xLabel, yLinha + alturaLinha * 0.65);
 
-            doc.setFontSize(10);
             doc.setFont("helvetica", "normal");
-            
-            const linhasTexto = doc.splitTextToSize(valor, larguraTotal - 2); // -2 para padding
-            const alturaCalculadaValor = Math.max(alturaValorMinima, linhasTexto.length * (alturaLinhaPadrao * 0.7)); // Calcula altura necessária
-            
-            doc.rect(x-1, y + alturaLabel, larguraTotal+1, alturaCalculadaValor); // Caixa da descrição abaixo do label
-            doc.text(linhasTexto, x + 1, y + alturaLabel + 4); // +1 padding esquerdo, +4 padding superior
-
-            return alturaLabel + alturaCalculadaValor; // Retorna a altura total da seção
+            doc.setFontSize(10);
+            doc.rect(xValor, yLinha, larguraValor, alturaLinha); // Caixa do valor
+            doc.text(valor, xValor + 2, yLinha + alturaLinha * 0.65, { maxWidth: larguraValor - 4, ...opcoesTextoValor });
         }
-
+        
         // --- Layout dos Campos ---
-        const xInicial = margemEsquerda + 1; // Pequena margem interna
-        const larguraTotalDisponivel = larguraConteudoUtil - 2; // Desconta margens internas
-
-        doc.setFontSize(10); // Reset para tamanho padrão do texto dos campos
+        const xLabelGlobal = margemEsquerdaPagina + 1;
+        const xValorGlobal = xLabelGlobal + 20; // Posição X inicial para a caixa de valor do campo NOME
+        const larguraValorGlobal = larguraConteudoUtil - (xValorGlobal - margemEsquerdaPagina) -1; // Largura da caixa de valor para campos de largura total
 
         // NOME
-        desenharCampoComBorda("NOME:", nomePaciente, xInicial, yPos, 20, larguraTotalDisponivel - 20, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
+        desenharLinhaCampoSimples(xLabelGlobal, yPos, alturaLinhaCampos, "NOME:", nomePaciente, xValorGlobal, larguraValorGlobal);
+        yPos += alturaLinhaCampos;
 
-        // OPERADOR | ASSISTENTE
-        const larguraLabelOperador = 25;
-        const larguraLabelAssistente = 28;
-        const espacoEntreColunas = 3;
-        const larguraValorMetade = (larguraTotalDisponivel - larguraLabelOperador - larguraLabelAssistente - espacoEntreColunas) / 2;
-        
-        desenharCampoComBorda("OPERADOR:", operador, xInicial, yPos, larguraLabelOperador, larguraValorMetade, alturaLinhaCamposComBorda);
-        desenharCampoComBorda("ASSISTENTE:", assistente, xInicial + larguraLabelOperador + larguraValorMetade + espacoEntreColunas, yPos, larguraLabelAssistente, larguraValorMetade, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
+        // Bloco OPERADOR, ASSISTENTE, INSTRUMENTADOR, ANESTESISTA, DATA
+        const xLabelCol1 = xLabelGlobal;
+        const larguraLabelCol1 = 35; // Largura para "OPERADOR:", "INSTRUMENTADOR(A):", "DATA DA OPERAÇÃO:"
+        const xValorCol1 = xLabelCol1 + larguraLabelCol1;
+        const larguraTotalColunas = larguraConteudoUtil -1; // Largura total para as duas colunas de campos de valor + linha divisória
+        const larguraValorCol = (larguraTotalColunas / 2) - 1; // Largura para cada caixa de valor nas colunas, -1 para linha divisória
 
-        // INSTRUMENTADOR(A) | ANESTESISTA
-        const larguraLabelInstrumentador = 40;
-        const larguraLabelAnestesista = 30;
-        // Reutilizando larguraValorMetade, assumindo que os labels têm larguras diferentes mas os campos de valor podem ser iguais
-        desenharCampoComBorda("INSTRUMENTADOR(A):", instrumentador, xInicial, yPos, larguraLabelInstrumentador, larguraValorMetade, alturaLinhaCamposComBorda);
-        desenharCampoComBorda("ANESTESISTA:", anestesista, xInicial + larguraLabelInstrumentador + larguraValorMetade + espacoEntreColunas, yPos, larguraLabelAnestesista, larguraValorMetade, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
+        const xLabelCol2 = xLabelCol1 + larguraLabelCol1 + larguraValorCol + 2; // +2 para linha divisória e pequeno espaço
+        const larguraLabelCol2 = 28; // Largura para "ASSISTENTE:", "ANESTESISTA:"
+        const xValorCol2 = xLabelCol2 + larguraLabelCol2;
         
-        // DATA DA OPERAÇÃO
-        desenharCampoComBorda("DATA DA OPERAÇÃO:", dataOperacao, xInicial, yPos, 45, larguraTotalDisponivel - 45, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
+        // Linha 1 do Bloco (OPERADOR | ASSISTENTE)
+        desenharLinhaCampoSimples(xLabelCol1, yPos, alturaLinhaCampos, "OPERADOR:", operador, xValorCol1, larguraValorCol);
+        desenharLinhaCampoSimples(xLabelCol2, yPos, alturaLinhaCampos, "ASSISTENTE:", assistente, xValorCol2, larguraValorCol);
+        doc.setLineWidth(espessuraBordaInterna);
+        doc.line(xValorCol1 + larguraValorCol + 0.5, yPos, xValorCol1 + larguraValorCol + 0.5, yPos + alturaLinhaCampos * 3); // Linha vertical divisória para 3 linhas
+        yPos += alturaLinhaCampos;
+
+        // Linha 2 do Bloco (INSTRUMENTADOR(A) | ANESTESISTA)
+        desenharLinhaCampoSimples(xLabelCol1, yPos, alturaLinhaCampos, "INSTRUMENTADOR(A):", instrumentador, xValorCol1, larguraValorCol);
+        desenharLinhaCampoSimples(xLabelCol2, yPos, alturaLinhaCampos, "ANESTESISTA:", anestesista, xValorCol2, larguraValorCol);
+        yPos += alturaLinhaCampos;
+        
+        // Linha 3 do Bloco (DATA DA OPERAÇÃO) - ocupa a largura das duas colunas de valor
+        desenharLinhaCampoSimples(xLabelCol1, yPos, alturaLinhaCampos, "DATA DA OPERAÇÃO:", dataOperacao, xValorCol1, larguraTotalColunas - larguraLabelCol1 +1);
+        yPos += alturaLinhaCampos;
 
         // DIAGNÓSTICO PRÉ-OPERATÓRIO
-        desenharCampoComBorda("DIAGNÓSTICO PRÉ-OPERATÓRIO:", diagPreOp, xInicial, yPos, 70, larguraTotalDisponivel - 70, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
-
+        desenharLinhaCampoSimples(xLabelGlobal, yPos, alturaLinhaCampos, "DIAGNÓSTICO PRÉ-OPERATÓRIO:", diagPreOp, xLabelGlobal + 68, larguraConteudoUtil - 68 -1);
+        yPos += alturaLinhaCampos;
+        
         // OPERAÇÃO TIPO
-        desenharCampoComBorda("OPERAÇÃO TIPO:", operacaoTipo, xInicial, yPos, 40, larguraTotalDisponivel - 40, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
+        desenharLinhaCampoSimples(xLabelGlobal, yPos, alturaLinhaCampos, "OPERAÇÃO TIPO:", operacaoTipo, xLabelGlobal + 40, larguraConteudoUtil - 40 -1);
+        yPos += alturaLinhaCampos;
 
         // DIAGNÓSTICO PÓS-OPERATÓRIO
-        desenharCampoComBorda("DIAGNÓSTICO PÓS-OPERATÓRIO:", diagPosOpValor, xInicial, yPos, 72, larguraTotalDisponivel - 72, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
+        desenharLinhaCampoSimples(xLabelGlobal, yPos, alturaLinhaCampos, "DIAGNÓSTICO PÓS-OPERATÓRIO:", diagPosOpValor, xLabelGlobal + 70, larguraConteudoUtil - 70 -1);
+        yPos += alturaLinhaCampos;
 
-        // Linhas em branco com borda (exemplo para 3 linhas, como no PDF de exemplo)
-        // Essas linhas parecem ter apenas a borda externa da linha, sem label.
-        doc.setLineWidth(0.2);
-        doc.rect(xInicial -1, yPos, larguraTotalDisponivel +1, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
-        doc.rect(xInicial -1, yPos, larguraTotalDisponivel +1, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
-        doc.rect(xInicial -1, yPos, larguraTotalDisponivel +1, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
+        // Linhas em branco (3 linhas)
+        for (let i = 0; i < 3; i++) {
+            doc.setLineWidth(espessuraBordaInterna);
+            doc.rect(margemEsquerdaPagina, yPos, larguraConteudoUtil, alturaLinhaCampos);
+            yPos += alturaLinhaCampos;
+        }
         
         // INTERCORRÊNCIAS DURANTE A OPERAÇÃO
-        // Esta seção no PDF de exemplo é uma linha única com label e valor.
-        desenharCampoComBorda("INTERCORRÊNCIAS DURANTE A OPERAÇÃO:", intercorrencias, xInicial, yPos, 95, larguraTotalDisponivel - 95, alturaLinhaCamposComBorda);
-        yPos += alturaLinhaCamposComBorda;
-        
-        // DESCRIÇÃO CIRÚRGICA
-        // Esta seção no PDF de exemplo tem um label e uma caixa maior para o texto.
-        const alturaLabelDesc = alturaLinhaPadrao * 0.8; // Altura para o label "DESCRIÇÃO CIRÚRGICA:"
-        const alturaMinimaValorDesc = 40; // Altura mínima para a caixa de descrição
-        const alturaTotalDescricao = desenharSecaoComBorda("DESCRIÇÃO CIRÚRGICA:", descricaoCirurgica, xInicial, yPos, larguraTotalDisponivel, alturaLabelDesc, alturaMinimaValorDesc);
-        yPos += alturaTotalDescricao + (alturaLinhaPadrao * 0.5); // Espaço após a descrição
+        desenharLinhaCampoSimples(xLabelGlobal, yPos, alturaLinhaCampos, "INTERCORRÊNCIAS DURANTE A OPERAÇÃO:", intercorrencias, xLabelGlobal + 93, larguraConteudoUtil - 93 -1);
+        yPos += alturaLinhaCampos;
 
-        // --- Linha no final do documento ---
-        doc.setLineWidth(0.5);
-        doc.line(margemEsquerda, yPos, margemEsquerda + larguraConteudoUtil, yPos);
+        // DESCRIÇÃO CIRÚRGICA
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.text("DESCRIÇÃO CIRÚRGICA:", margemEsquerdaPagina, yPos + alturaLinhaCampos * 0.65);
+        doc.setLineWidth(espessuraBordaInterna);
+        doc.rect(margemEsquerdaPagina, yPos, larguraConteudoUtil, alturaLinhaCampos); // Borda apenas para o título da seção
+        yPos += alturaLinhaCampos;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        const alturaDescricaoCaixa = 60; // Altura fixa para a caixa de descrição, ajuste conforme necessário
+        doc.rect(margemEsquerdaPagina, yPos, larguraConteudoUtil, alturaDescricaoCaixa);
+        const linhasDescricao = doc.splitTextToSize(descricaoCirurgica, larguraConteudoUtil - 4); // -4 para padding interno
+        doc.text(linhasDescricao, margemEsquerdaPagina + 2, yPos + 4); // +2 e +4 para padding
+        yPos += alturaDescricaoCaixa;
+
+        // --- Desenha a Borda Principal Externa (Final) ---
+        doc.setLineWidth(espessuraBordaPrincipal);
+        doc.rect(margemEsquerdaPagina, yInicioConteudoComBorda, larguraConteudoUtil, yPos - yInicioConteudoComBorda);
 
         // --- Salvar o PDF ---
-        // Usando template literal corretamente para o nome do arquivo
         doc.save(`descricao_cirurgica_${(nomePaciente || "paciente").trim().replace(/\s+/g, '_')}.pdf`);
         alert("Documento PDF gerado e pronto para download!");
-
     });
 }
 });
