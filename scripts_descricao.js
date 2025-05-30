@@ -190,113 +190,69 @@ diagPos: "O mesmo"
         });
 });
 const btnImprimir = document.getElementById('btnImprimirDescricao');
-    if (btnImprimir) {
-        btnImprimir.addEventListener('click', function() {
-            console.log("Botão 'Imprimir Descrição' CLICADO - Iniciando versão simplificada do PDF.");
+if (btnImprimir) {
+    btnImprimir.addEventListener('click', function() {
+        console.log("Botão 'Imprimir Descrição' CLICADO - Testando com autoPrint e nova janela");
 
-            if (!window.jspdf) {
-                alert("ERRO CRÍTICO: A biblioteca jsPDF não está carregada na página. Verifique o <script> no HTML.");
-                console.error("window.jspdf é undefined. A biblioteca jsPDF precisa ser incluída no HTML.");
-                return;
-            }
-            console.log("Biblioteca jsPDF encontrada:", window.jspdf);
+        if (!window.jspdf) {
+            alert("ERRO CRÍTICO: Biblioteca jsPDF não carregada!");
+            console.error("window.jspdf é undefined.");
+            return;
+        }
+        console.log("1. Biblioteca jsPDF encontrada.");
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'p',
-                unit: 'mm',
-                format: 'a4'
-            });
-            console.log("Nova instância jsPDF 'doc' criada.");
+        const { jsPDF } = window.jspdf;
+        let doc;
+        try {
+            doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+            console.log("2. Nova instância jsPDF 'doc' criada.");
+        } catch(e) {
+            console.error("ERRO CRÍTICO AO CRIAR jsPDF DOC:", e);
+            alert("Erro ao criar objeto PDF. Verifique o console.");
+            return;
+        }
 
-            // --- Coleta de Dados MÍNIMA para teste ---
-            let nomePaciente = "Paciente Padrão";
-            try {
-                nomePaciente = document.getElementById('paciente')?.value.trim() || "Paciente Padrão Teste";
-            } catch(e) { console.error("Erro ao obter nome do paciente:", e); }
+        // --- Desenho EXTREMAMENTE SIMPLES no PDF (mantendo o teste simples) ---
+        try {
+            doc.setFontSize(18);
+            doc.setFont("helvetica", "bold");
+            doc.text("RELATÓRIO DE TESTE (autoPrint)", 105, 20, { align: 'center' });
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text("Paciente: Nome do Paciente Teste", 20, 40);
+            doc.text("Procedimento: Procedimento de Teste", 20, 50);
+            doc.text("Se o diálogo de impressão abrir automaticamente, funcionou!", 20, 60);
+            console.log("3. Conteúdo de teste simples adicionado ao PDF para autoPrint.");
+        } catch (e_text) {
+            console.error("Erro ao desenhar texto de teste no PDF:", e_text);
+            alert("Erro ao desenhar conteúdo de teste no PDF. Verifique o console.");
+            return; 
+        }
 
-            let operacaoTipo = "Procedimento Padrão";
-            try {
-                operacaoTipo = document.getElementById('procedimento')?.value.trim() || "Procedimento Padrão Teste";
-            } catch(e) { console.error("Erro ao obter tipo de operação:", e); }
+        // --- Tentar autoPrint e abrir em nova janela ---
+        try {
+            console.log("4. Adicionando autoPrint ao documento.");
+            doc.autoPrint(); // Adiciona o script de auto-impressão ao PDF
+
+            console.log("5. Tentando abrir PDF com autoPrint em nova janela (dataurlnewwindow).");
+            // Esta opção tenta abrir o PDF em uma nova janela e o script embutido deve chamar o diálogo de impressão.
+            doc.output('dataurlnewwindow'); 
             
-            console.log("Dados para PDF de teste:", { nomePaciente, operacaoTipo });
+            // Alternativamente, se 'dataurlnewwindow' não funcionar bem ou for bloqueado:
+            // const pdfBlob = doc.output('blob');
+            // const pdfUrl = URL.createObjectURL(pdfBlob);
+            // window.open(pdfUrl, '_blank');
+            // URL.revokeObjectURL(pdfUrl); // Lembre-se de revogar se usar blob com window.open
 
-            // --- Desenho EXTREMAMENTE SIMPLES no PDF ---
-            try {
-                doc.setFontSize(18);
-                doc.setFont("helvetica", "bold");
-                doc.text("RELATÓRIO DE TESTE", 105, 20, { align: 'center' });
+            console.log("6. PDF enviado para nova janela com instrução de autoPrint.");
 
-                doc.setFontSize(12);
-                doc.setFont("helvetica", "normal");
-                let y = 40; // Posição Y inicial para o texto
-
-                doc.text(`Paciente: ${nomePaciente}`, 20, y);
-                y += 10;
-                doc.text(`Procedimento: ${operacaoTipo}`, 20, y);
-                y += 10;
-                doc.text("Este é um teste para verificar se o PDF é gerado e impresso.", 20, y);
-                
-                console.log("Conteúdo de teste desenhado no objeto 'doc'.");
-            } catch (e) {
-                console.error("Erro CRÍTICO ao tentar desenhar conteúdo de teste no PDF:", e);
-                alert("Um erro ocorreu ao tentar desenhar o conteúdo do PDF. Verifique o console.");
-                return; // Interrompe se não conseguir desenhar o básico
-            }
-
-            // --- Lógica para abrir diálogo de impressão (mantida) ---
-            try {
-                const pdfBlob = doc.output('blob');
-                const pdfUrl = URL.createObjectURL(pdfBlob);
-                console.log("PDF de teste (blob) criado, URL:", pdfUrl);
-
-                const iframe = document.createElement('iframe');
-                iframe.style.position = 'absolute';
-                iframe.style.width = '0';
-                iframe.style.height = '0';
-                iframe.style.border = '0';
-                iframe.style.visibility = 'hidden';
-
-                iframe.onload = function() {
-                    console.log("Iframe carregado com o PDF de teste.");
-                    try {
-                        iframe.contentWindow.focus();
-                        iframe.contentWindow.print();
-                        console.log("Diálogo de impressão solicitado para o PDF de teste.");
-                    } catch (e_print) {
-                        console.error("Erro ao tentar imprimir o iframe com PDF de teste:", e_print);
-                        alert("Erro ao tentar abrir o diálogo de impressão. Verifique o console.");
-                    } finally {
-                        setTimeout(() => {
-                            if (document.body.contains(iframe)) {
-                               document.body.removeChild(iframe);
-                            }
-                            URL.revokeObjectURL(pdfUrl);
-                            console.log("Iframe de teste e Blob URL limpos.");
-                        }, 3000); 
-                    }
-                };
-                iframe.onerror = function() {
-                    console.error("Erro ao carregar o PDF de teste no iframe.");
-                    alert("Não foi possível carregar o PDF de teste para impressão.");
-                    if (document.body.contains(iframe)) {
-                        document.body.removeChild(iframe);
-                    }
-                    URL.revokeObjectURL(pdfUrl);
-                };
-                
-                document.body.appendChild(iframe);
-                iframe.src = pdfUrl;
-
-            } catch (error_blob) {
-                console.error("Erro ao gerar blob do PDF ou preparar para impressão:", error_blob);
-                alert("Ocorreu um erro ao gerar o PDF (blob) ou preparar para impressão.");
-            }
-        }); // Fecha o addEventListener do btnImprimir
-    } else {
-        console.error("Botão 'btnImprimirDescricao' NÃO FOI ENCONTRADO no HTML! Verifique o ID.");
-    }
-   
+        } catch (e_autoprint) {
+            console.error("Erro ao tentar autoPrint ou abrir em nova janela:", e_autoprint);
+            alert("Erro ao configurar autoPrint ou abrir PDF. Verifique o console.");
+        }
+    });
+} else {
+    console.error("Botão 'btnImprimirDescricao' NÃO FOI ENCONTRADO no HTML!");
+}   
 });
 
