@@ -190,8 +190,7 @@ diagPos: "O mesmo"
         });
 });
 
-    // Funcionalidade do botão Imprimir (exemplo básico)
-    const btnImprimir = document.getElementById('btnImprimirDescricao');
+        const btnImprimir = document.getElementById('btnImprimirDescricao');
 if (btnImprimir) {
     btnImprimir.addEventListener('click', function() {
         const { jsPDF } = window.jspdf;
@@ -206,7 +205,8 @@ if (btnImprimir) {
         const margemSuperiorPagina = 15;
         const larguraConteudoUtil = doc.internal.pageSize.getWidth() - (2 * margemEsquerdaPagina);
         let yPos = margemSuperiorPagina;
-        const alturaLinhaCampos = 7; // Altura padrão para uma linha de campo
+        const alturaLinhaPadrao = 7;       // <--- CORRIGIDO/ADICIONADO NOME CORRETO
+        const alturaLinhaCampos = 8;
         const espessuraBordaPrincipal = 0.5;
         const espessuraBordaInterna = 0.2;
 
