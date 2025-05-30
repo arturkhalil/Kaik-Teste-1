@@ -1,0 +1,142 @@
+/* Estilos Gerais */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte mais moderna */
+    background-color: #0a192f; /* Azul bem escuro para o fundo geral */
+    color: #e6f1ff; /* Cor de texto clara principal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px; /* Evita que o conteúdo cole nas bordas em telas pequenas */
+    box-sizing: border-box;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1200px; /* Define uma largura máxima para o conteúdo principal */
+    min-height: 90vh; /* Altura mínima para o container principal */
+    background-color: #172a46; /* Azul um pouco mais claro para o container interno */
+    border-radius: 10px;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
+    position: relative; /* Para posicionar elementos filhos absolutamente */
+    padding: 40px;
+    box-sizing: border-box;
+    display: flex; /* Para ajudar a organizar o conteúdo interno se necessário */
+    flex-direction: column; /* Empilha os filhos diretos verticalmente */
+}
+
+.top-left-text {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    font-size: 0.8em;
+    color: #8892b0; /* Cinza azulado para texto secundário */
+}
+
+.footer-text {
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+    font-size: 0.75em;
+    text-align: right;
+    color: #8892b0;
+}
+
+/* Conteúdo Principal */
+.main-content {
+    flex-grow: 1; /* Faz o conteúdo principal ocupar o espaço disponível */
+    background-image: url('imagens/complete-medical-facility-surgeon-55oe7utxwkrzlul1.jpg'); /* Coloque sua imagem de fundo aqui */
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    padding: 30px;
+    position: relative; /* Para o overlay */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os itens no eixo transversal (horizontal aqui) */
+    justify-content: center; /* Centraliza os itens no eixo principal (vertical aqui) */
+    text-align: center;
+    z-index: 1; /* Garante que o conteúdo fique sobre o pseudo-elemento ::before */
+}
+
+/* Overlay azulado sobre a imagem de fundo do .main-content */
+.main-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(10, 25, 47, 0.75); /* Azul escuro com transparência (ajuste a opacidade) */
+    border-radius: 8px; /* Para acompanhar o border-radius do pai */
+    z-index: -1; /* Coloca o overlay atrás do conteúdo do .main-content */
+}
+
+.header-logos {
+    display: flex;
+    gap: 20px; /* Espaço entre os logos */
+    margin-bottom: 25px;
+    position: absolute; /* Posicionamento dos logos no topo da área central */
+    top: 20px;
+    left: 20px;
+    z-index: 2; /* Para garantir que fiquem sobre o overlay */
+}
+
+.logo {
+    height: 90px; /* Ajuste conforme o tamanho dos seus logos */
+}
+
+#logoBrasao {
+    height: 100px; /* Pode ser um pouco maior */
+}
+
+.top-right-logo {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2; /* Para garantir que fique sobre o overlay */
+}
+
+.welcome-area {
+    margin-bottom: 30px;
+    color: #ccd6f6; /* Cor clara para os textos de boas-vindas */
+}
+
+.welcome-area h1 {
+    font-size: 2.2em;
+    margin-bottom: 5px;
+    color: #e6f1ff; /* Mais destaque para o título principal */
+}
+
+.welcome-area h2 {
+    font-size: 1.3em;
+    font-weight: normal;
+    color: #a8b2d1; /* Um pouco menos destaque para o subtítulo */
+}
+
+.action-buttons button {
+    background-color: #64ffda; /* Cor de destaque (ciano/verde claro) */
+    color: #0a192f; /* Texto escuro para contraste */
+    border: none;
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex; /* Para alinhar ícone e texto */
+    align-items: center;
+    gap: 10px; /* Espaço entre ícone e texto */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.action-buttons button:hover {
+    background-color: #52d3bc;
+    transform: translateY(-2px); /* Pequeno efeito ao passar o mouse */
+}
+
+.action-buttons button img {
+    width: 20px;
+    height: 20px;
+}

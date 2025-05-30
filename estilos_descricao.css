@@ -1,0 +1,185 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4; /* Cor de fundo geral clara */
+    color: #333;
+}
+
+.cabecalho-principal {
+    background-color: #2c3e50; /* Azul escuro para o cabeçalho */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-navegacao .nav-item {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin-right: 5px;
+}
+
+.menu-navegacao .nav-item.ativo,
+.menu-navegacao .nav-item:hover {
+    background-color: #3498db; /* Azul mais claro para item ativo/hover */
+    border-radius: 4px;
+}
+
+.logos-cabecalho .logo-pequeno {
+    height: 60px;; /* Ajuste conforme necessário */
+    margin-left: 15px;
+}
+
+.container-descricao {
+    padding: 20px;
+}
+
+.secao-topo {
+    margin-bottom: 20px;
+}
+
+.botao-acao {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.botao-acao:hover {
+    background-color: #2980b9;
+}
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Layout responsivo básico */
+    gap: 20px;
+}
+
+.secao-identificacao,
+.secao-dados-cirurgia,
+.secao-descricao-cirurgica,
+.secao-botoes-procedimento {
+    background-color: #ffffff; /* Fundo branco para as seções */
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.secao-descricao-cirurgica,
+.secao-botoes-procedimento {
+    grid-column: span 3; /* Faz essas seções ocuparem mais espaço se houver colunas disponíveis */
+}
+
+
+h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.campo-grupo {
+    margin-bottom: 10px;
+}
+
+.campo-grupo label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.campo-grupo input[type="text"],
+textarea#descricaoCirurgica {
+    width: calc(100% - 20px); /* Largura total menos padding */
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea#descricaoCirurgica {
+    resize: vertical; /* Permite redimensionar verticalmente */
+}
+
+.grid-botoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Ajuste o minmax para o tamanho dos seus botões */
+    gap: 20px;
+}
+
+.btn-proc {
+    background-color: #e67e22; /* Laranja para os botões de procedimento */
+    color: white;
+    border: none;
+    padding: 12px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+.btn-proc:hover {
+    background-color: #d35400; /* Laranja mais escuro no hover */
+}
+
+/* Ajustes para se parecer mais com a imagem */
+body {
+    background-color: #E0E0E0; /* Fundo cinza claro geral */
+}
+
+.cabecalho-principal {
+    background-color: #1A4A7F; /* Azul mais próximo da imagem */
+}
+.menu-navegacao .nav-item.ativo,
+.menu-navegacao .nav-item:hover {
+    background-color: #2468B1;
+}
+.secao-identificacao,
+.secao-dados-cirurgia,
+.secao-descricao-cirurgica,
+.secao-botoes-procedimento {
+    background-color: #F0F0F0; /* Fundo das seções um pouco mais claro */
+    border: 1px solid #D0D0D0;
+    box-shadow: none; /* A imagem não parece ter muita sombra nas caixas */
+}
+h3 {
+    color: #1A4A7F;
+    border-bottom: none; /* Sem borda inferior nos títulos h3 da imagem */
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+.campo-grupo label {
+    font-size: 0.8em;
+}
+.campo-grupo input[type="text"],
+textarea#descricaoCirurgica {
+    background-color: #FFF;
+    border: 1px solid #A0A0A0;
+}
+
+.btn-proc {
+    background-color: #E8772E; /* Laranja da imagem */
+    font-size: 0.85em;
+    padding: 8px 10px; /* Um pouco menor */
+}
+.btn-proc:hover {
+    background-color: #C75C1F;
+}
+
+.botao-acao { /* Botão Imprimir Descrição */
+    background-color: #D0D0D0;
+    color: #333;
+    border: 1px solid #A0A0A0;
+}
+.botao-acao:hover {
+    background-color: #BDBDBD;
+}

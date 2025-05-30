@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descrição Cirúrgica</title>
+    <link rel="stylesheet" href="estilos_descricao.css"> </head>
+<body>
+    <header class="cabecalho-principal">
+        <nav class="menu-navegacao">
+            <a href="index.html" class="nav-item">Menu Principal</a>
+            <a href="#" class="nav-item ativo">Descrição</a> <a href="#" class="nav-item">Prescrição</a> <a href="#" class="nav-item">Receituário</a>
+        </nav>
+        <div class="logos-cabecalho">
+            <img src="imagens/logo-drkaik.png" alt="Logo Dr. Kaik Paz" class="logo-pequeno">
+            <img src="imagens/logo-santacasa.png" alt="Logo Brasão" class="logo-pequeno">
+            </div>
+    </header>
+
+    <main class="container-descricao">
+        <section class="secao-topo">
+            <button id="btnImprimirDescricao" class="botao-acao">
+                <img src="imagens/icon-print.svg" alt="Imprimir"> Imprimir Descrição
+            </button>
+        </section>
+
+        <div class="grid-layout">
+            <section class="secao-identificacao">
+                <h3>Identificação do Paciente</h3>
+                <div class="campo-grupo">
+                    <label for="paciente">Paciente:</label>
+                    <input type="text" id="paciente" name="paciente">
+                </div>
+                <div class="campo-grupo">
+                    <label for="cirurgiao">Cirurgião:</label>
+                    <input type="text" id="cirurgiao" name="cirurgiao">
+                </div>
+                <div class="campo-grupo">
+                    <label for="instrumentador">Instrumentador:</label>
+                    <input type="text" id="instrumentador" name="instrumentador">
+                </div>
+                <div class="campo-grupo">
+                    <label for="assistente">Assistente:</label>
+                    <input type="text" id="assistente" name="assistente">
+                </div>
+                <div class="campo-grupo">
+                    <label for="anestesista">Anestesista:</label>
+                    <input type="text" id="anestesista" name="anestesista">
+                </div>
+            </section>
+
+            <section class="secao-dados-cirurgia">
+                <h3>Dados da Cirurgia</h3>
+                <div class="campo-grupo">
+                    <label for="procedimento">Procedimento:</label>
+                    <input type="text" id="procedimento" name="procedimento">
+                </div>
+                <div class="campo-grupo">
+                    <label for="diagPreOp">Diagnóstico Pré-Operatório:</label>
+                    <input type="text" id="diagPreOp" name="diagPreOp">
+                </div>
+                <div class="campo-grupo">
+                    <label for="diagPosOp">Diagnóstico Pós-Operatório:</label>
+                    <input type="text" id="diagPosOp" name="diagPosOp">
+                </div>
+            </section>
+
+            <section class="secao-descricao-cirurgica">
+                <h3>Descrição Cirúrgica</h3>
+                <textarea id="descricaoCirurgica" name="descricaoCirurgica" rows="10"></textarea>
+            </section>
+
+            <section class="secao-botoes-procedimento">
+                <h3>Procedimentos</h3>
+                <div class="grid-botoes">
+                    <button class="btn-proc" data-proc="colecistectomiaVideo">Colecistectomia Videolaparoscópica</button>
+                    <button class="btn-proc" data-proc="colpoperineoplastia">Colpoperineoplastia</button>
+                    <button class="btn-proc" data-proc="colecistectomiaConvencional">Colecistectomia Convencional</button>
+                    <button class="btn-proc" data-proc="varicocele">Varicocele</button>
+                    <button class="btn-proc" data-proc="histerectomiaAdenomiose">Histerectomia por Adenomiose</button>
+                    <button class="btn-proc" data-proc="bartholinectomia">Bartholinectomia</button>
+                    <button class="btn-proc" data-proc="histerectomiaMiomatose">Histerectomia por Miomatose</button>
+                    <button class="btn-proc" data-proc="postectomia">Postectomia</button>
+                    <button class="btn-proc" data-proc="histerectomiaVaginal">Histerectomia Vaginal</button>
+                    <button class="btn-proc" data-proc="hidrocele">Hidrocele</button>
+                    <button class="btn-proc" data-proc="herniaInguinalE">Hérnia Inguinal E</button>
+                    <button class="btn-proc" data-proc="herniaInguinalBilateral">Hérnia Inguinal Bilateral</button>
+                    <button class="btn-proc" data-proc="herniaEpigastrica">Hérnia Epigástrica</button>
+                    <button class="btn-proc" data-proc="herniaUmbilical">Hérnia Umbilical</button>
+                    <button class="btn-proc" data-proc="herniaInguinalD">Hérnia Inguinal D</button>
+                    </div>
+            </section>
+        </div>
+    </main>
+        html <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="scripts_descricao.js"></script> </body>
+</html>
