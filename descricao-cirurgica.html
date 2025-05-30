@@ -47,6 +47,10 @@
                     <label for="anestesista">Anestesista:</label>
                     <input type="text" id="anestesista" name="anestesista">
                 </div>
+                <div class="campo-grupo campo-data-operacao"> <label for="dataOperacao">DATA DA OPERAÇÃO:</label>
+            <input type="date" id="dataOperacao" name="dataOperacao">
+            <button type="button" id="btnHojeDataOperacao" class="botao-inline">Hoje</button>
+        </div>
             </section>
 
             <section class="secao-dados-cirurgia">
@@ -64,11 +68,17 @@
                     <input type="text" id="diagPosOp" name="diagPosOp">
                 </div>
             </section>
+            
 
             <section class="secao-descricao-cirurgica">
                 <h3>Descrição Cirúrgica</h3>
                 <textarea id="descricaoCirurgica" name="descricaoCirurgica" rows="10"></textarea>
             </section>
+            <section class="secao-intercorrencias"> <h3>INTERCORRÊNCIAS</h3> <div class="campo-grupo">
+                <label for="intercorrencias">INTERCORRÊNCIAS DURANTE A OPERAÇÃO:</label>
+                <input type="text" id="intercorrencias" name="intercorrencias" value="Sem intercorrências">
+            </div>
+        </section>
 
             <section class="secao-botoes-procedimento">
                 <h3>Procedimentos</h3>

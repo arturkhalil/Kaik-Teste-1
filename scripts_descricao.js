@@ -378,3 +378,58 @@ if (btnImprimir) {
     });
 }
 });
+const campoDataOperacao = document.getElementById('dataOperacao');
+    const btnHojeDataOperacao = document.getElementById('btnHojeDataOperacao');
+
+    if (campoDataOperacao && btnHojeDataOperacao) {
+        btnHojeDataOperacao.addEventListener('click', function() {
+            const hoje = new Date();
+
+            // Formata a data para YYYY-MM-DD, que é o formato esperado pelo input type="date"
+            const ano = hoje.getFullYear();
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // Meses são 0-indexados, adiciona 1
+            const dia = String(hoje.getDate()).padStart(2, '0');
+
+            campoDataOperacao.value = `${ano}-${mes}-${dia}`;
+        });
+    } else {
+        if (!campoDataOperacao) console.warn("Campo 'dataOperacao' não encontrado para o botão 'Hoje'.");
+        if (!btnHojeDataOperacao) console.warn("Botão 'btnHojeDataOperacao' não encontrado.");
+    }
+
+
+    // --- Funcionalidade do botão Imprimir (seu código existente para jsPDF) ---
+    const btnImprimir = document.getElementById('btnImprimirDescricao');
+    if (btnImprimir) {
+        btnImprimir.addEventListener('click', function() {
+            // ... (início do seu código jsPDF: const { jsPDF } = window.jspdf; etc.) ...
+
+            // --- Coleta de Dados ---
+            // ...
+            const dataOperacaoEl = document.getElementById('dataOperacao');
+            let dataOperacaoFormatadaParaPDF = "Data não informada"; // Valor padrão
+
+            if (dataOperacaoEl && dataOperacaoEl.value) {
+                // O valor do input type="date" é YYYY-MM-DD
+                const [year, month, day] = dataOperacaoEl.value.split('-');
+                dataOperacaoFormatadaParaPDF = `${day}/${month}/${year}`; // Formato DD/MM/YYYY para o PDF
+            } else if (dataOperacaoEl) { // Se o campo existe mas está vazio, usa data atual formatada
+                const hoje = new Date();
+                const diaHoje = String(hoje.getDate()).padStart(2, '0');
+                const mesHoje = String(hoje.getMonth() + 1).padStart(2, '0');
+                const anoHoje = hoje.getFullYear();
+                dataOperacaoFormatadaParaPDF = `${diaHoje}/${mesHoje}/${anoHoje}`;
+            }
+            // ...
+
+            // --- Layout dos Campos no PDF (usando a variável dataOperacaoFormatadaParaPDF) ---
+            // ...
+            // DATA DA OPERAÇÃO
+            desenharCampoComBorda("DATA DA OPERAÇÃO:", dataOperacaoFormatadaParaPDF, xInicial, yPos, 45, larguraTotalDisponivel - 45, alturaLinhaCamposComBorda);
+            yPos += alturaLinhaCamposComBorda;
+            // ...
+
+            // ... (resto do seu código jsPDF e doc.save()) ...
+        });
+    }
+

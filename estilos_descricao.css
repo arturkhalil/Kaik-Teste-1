@@ -183,3 +183,25 @@ textarea#descricaoCirurgica {
 .botao-acao:hover {
     background-color: #BDBDBD;
 }
+.campo-data-operacao {
+    display: flex; /* Alinha label, input e botão na mesma linha */
+    align-items: center; /* Alinha verticalmente ao centro */
+    gap: 10px; /* Espaço entre os itens */
+}
+
+.campo-data-operacao label {
+    margin-bottom: 0; /* Remove margem inferior padrão do label se houver */
+}
+
+.campo-data-operacao input[type="date"] {
+    flex-grow: 1; /* Faz o input de data ocupar o espaço disponível */
+    /* Ajuste a largura do input de data se necessário, 
+       pois o flex-grow pode fazê-lo muito grande */
+    max-width: 150px; /* Exemplo de largura máxima */
+}
+
+.botao-inline {
+    padding: 6px 10px; /* Ajuste o padding do botão */
+    font-size: 0.9em;
+    /* Adicione outros estilos que desejar */
+}
