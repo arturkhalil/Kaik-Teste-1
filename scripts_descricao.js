@@ -215,7 +215,7 @@ if (btnImprimir) {
 
         // --- 1. Logo e Cabeçalho Principal ---
         // SUBSTITUA 'logoSantaCasaDataURL' PELA STRING BASE64 DA SUA IMAGEM DO LOGO
-        const logoSantaCasaDataURL = 'COLE_A_STRING_BASE64_DO_SEU_LOGO_AQUI'; // Ex: 'data:image/png;base64,iVBORw0KGgo...'
+        const logoSantaCasaDataURL = 'C:\Users\artur\Documents\GitHub\Kaik-Teste-1\imagens\logo-santacasa.png'; // Ex: 'data:image/png;base64,iVBORw0KGgo...'
         const larguraLogo = 15; // mm - ajuste
         const alturaLogo = 15;  // mm - ajuste
 
@@ -410,21 +410,4 @@ if (btnImprimir) {
     });
 }
 });
-const campoDataOperacao = document.getElementById('dataOperacao');
-    const btnHojeDataOperacao = document.getElementById('btnHojeDataOperacao');
 
-    if (campoDataOperacao && btnHojeDataOperacao) {
-        btnHojeDataOperacao.addEventListener('click', function() {
-            const hoje = new Date();
-
-            // Formata a data para YYYY-MM-DD, que é o formato esperado pelo input type="date"
-            const ano = hoje.getFullYear();
-            const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // Meses são 0-indexados, adiciona 1
-            const dia = String(hoje.getDate()).padStart(2, '0');
-
-            campoDataOperacao.value = `${ano}-${mes}-${dia}`;
-        });
-    } else {
-        if (!campoDataOperacao) console.warn("Campo 'dataOperacao' não encontrado para o botão 'Hoje'.");
-        if (!btnHojeDataOperacao) console.warn("Botão 'btnHojeDataOperacao' não encontrado.");
-    }
