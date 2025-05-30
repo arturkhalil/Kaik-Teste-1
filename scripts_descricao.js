@@ -188,7 +188,7 @@ diagPos: "O mesmo"
                 console.warn("Preset não encontrado para:", tipoProcedimento);
             }
         });
-    });
+});
 
     // Funcionalidade do botão Imprimir (exemplo básico)
     const btnImprimir = document.getElementById('btnImprimirDescricao');
@@ -355,9 +355,58 @@ if (btnImprimir) {
         doc.setLineWidth(espessuraBordaPrincipal);
         doc.rect(margemEsquerdaPagina, yInicioConteudoComBorda, larguraConteudoUtil, yPos - yInicioConteudoComBorda);
 
-        // --- Salvar o PDF ---
-        doc.save(`descricao_cirurgica_${(nomePaciente || "paciente").trim().replace(/\s+/g, '_')}.pdf`);
-        alert("Documento PDF gerado e pronto para download!");
+        // --- Abrir diálogo de impressão para o PDF ---
+        try {
+            const pdfBlob = doc.output('blob'); // Gera o PDF como um Blob
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+
+            // Cria um iframe temporário e invisível
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = '0';
+            iframe.style.visibility = 'hidden'; // Garante que não seja visível
+
+            iframe.onload = function() {
+                console.log("Iframe carregado com o PDF.");
+                try {
+                    // Foca no iframe e chama a função de impressão da janela do iframe
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                    console.log("Diálogo de impressão solicitado.");
+                } catch (e) {
+                    console.error("Erro ao tentar imprimir o iframe:", e);
+                    alert("Erro ao tentar abrir o diálogo de impressão. Verifique o console do navegador.");
+                } finally {
+                    // Limpeza: remove o iframe após um tempo (a impressão é assíncrona)
+                    // e revoga o URL do Blob para liberar memória.
+                    // Não há um evento confiável para saber quando o diálogo de impressão foi fechado ou a impressão concluída.
+                    setTimeout(() => {
+                        document.body.removeChild(iframe);
+                        URL.revokeObjectURL(pdfUrl);
+                        console.log("Iframe e Blob URL limpos.");
+                    }, 2000); // Espera 2 segundos antes de limpar, ajuste se necessário
+                }
+            };
+
+            iframe.onerror = function() {
+                console.error("Erro ao carregar o PDF no iframe.");
+                alert("Não foi possível carregar o PDF para impressão.");
+                document.body.removeChild(iframe);
+                URL.revokeObjectURL(pdfUrl);
+            };
+            
+            document.body.appendChild(iframe); // Adiciona o iframe ao corpo do documento
+            iframe.src = pdfUrl; // Define a origem do iframe para o PDF
+
+        } catch (error) {
+            console.error("Erro ao gerar ou preparar PDF para impressão:", error);
+            alert("Ocorreu um erro ao gerar o PDF para impressão.");
+        }
+
+        // O alert abaixo pode não ser ideal aqui, pois a impressão é uma ação separada.
+        // alert("Preparando PDF para impressão..."); // Removido ou alterado
     });
 }
 });
@@ -379,40 +428,3 @@ const campoDataOperacao = document.getElementById('dataOperacao');
         if (!campoDataOperacao) console.warn("Campo 'dataOperacao' não encontrado para o botão 'Hoje'.");
         if (!btnHojeDataOperacao) console.warn("Botão 'btnHojeDataOperacao' não encontrado.");
     }
-
-
-    // --- Funcionalidade do botão Imprimir (seu código existente para jsPDF) ---
-    const btnImprimir = document.getElementById('btnImprimirDescricao');
-    if (btnImprimir) {
-        btnImprimir.addEventListener('click', function() {
-            // ... (início do seu código jsPDF: const { jsPDF } = window.jspdf; etc.) ...
-
-            // --- Coleta de Dados ---
-            // ...
-            const dataOperacaoEl = document.getElementById('dataOperacao');
-            let dataOperacaoFormatadaParaPDF = "Data não informada"; // Valor padrão
-
-            if (dataOperacaoEl && dataOperacaoEl.value) {
-                // O valor do input type="date" é YYYY-MM-DD
-                const [year, month, day] = dataOperacaoEl.value.split('-');
-                dataOperacaoFormatadaParaPDF = `${day}/${month}/${year}`; // Formato DD/MM/YYYY para o PDF
-            } else if (dataOperacaoEl) { // Se o campo existe mas está vazio, usa data atual formatada
-                const hoje = new Date();
-                const diaHoje = String(hoje.getDate()).padStart(2, '0');
-                const mesHoje = String(hoje.getMonth() + 1).padStart(2, '0');
-                const anoHoje = hoje.getFullYear();
-                dataOperacaoFormatadaParaPDF = `${diaHoje}/${mesHoje}/${anoHoje}`;
-            }
-            // ...
-
-            // --- Layout dos Campos no PDF (usando a variável dataOperacaoFormatadaParaPDF) ---
-            // ...
-            // DATA DA OPERAÇÃO
-            desenharCampoComBorda("DATA DA OPERAÇÃO:", dataOperacaoFormatadaParaPDF, xInicial, yPos, 45, larguraTotalDisponivel - 45, alturaLinhaCamposComBorda);
-            yPos += alturaLinhaCamposComBorda;
-            // ...
-
-            // ... (resto do seu código jsPDF e doc.save()) ...
-        });
-    }
-
